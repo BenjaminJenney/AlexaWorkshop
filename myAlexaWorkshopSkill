@@ -16,6 +16,7 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
+
 const HelloWorldIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -30,7 +31,7 @@ const HelloWorldIntentHandler = {
     }
 };
 
-const randomPhraseIntentHandler = {
+const RandomPhraseIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === 'randomPhraseIntent';
