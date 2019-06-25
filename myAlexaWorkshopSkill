@@ -16,17 +16,16 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
-
 const HelloWorldIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === 'HelloWorldIntent';
     },
     handle(handlerInput) {
-        const speechText = 'Hello, I am talking to you from the hello world intent handler, check out the code, in the code tab to find it!';
+        const speechText = 'Hello World!';
         return handlerInput.responseBuilder
             .speak(speechText)
-            .reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
             .getResponse();
     }
 };
@@ -34,7 +33,7 @@ const HelloWorldIntentHandler = {
 const RandomPhraseIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'randomPhraseIntent';
+            && handlerInput.requestEnvelope.request.intent.name === 'RandomPhraseIntent';
     },
     handle(handlerInput) {
         //you can change or add your own phrases in the phrases array
@@ -48,6 +47,25 @@ const RandomPhraseIntentHandler = {
     }
 };
 
+const ReverseWordIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+        && handlerInput.requestEnvelope.request.intent.name === 'ReverseWordIntent';
+    },
+    handle(handlerInput) {
+      let  slots = handlerInput.requestEnvelope.request.intent.slots;
+      let word = slots.word.value;
+      
+      let speechText = reverseWord(word);
+      
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt()
+        .getResponse()
+      
+    }
+}
+
 const CallAPIIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -57,7 +75,7 @@ const CallAPIIntentHandler = {
         
         let responseFromApi = await getHttps();
         let speechText = responseFromApi.text;
-        
+      
         return handlerInput.responseBuilder
             .speak(speechText)
             .reprompt()
@@ -65,23 +83,6 @@ const CallAPIIntentHandler = {
     }
 }
 
-const ReverseWordIntentHandler = {
-    canHandle(handlerInput) {
-        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-        && handlerInput.requestEnvelope.request.intent.name === 'ReverseWordIntent';
-    },
-    handle(handlerInput) {
-      let slots = handlerInput.requestEnvelope.request.intent.slots;
-      let word = slots.word.value;
-      
-      let speechText = revWord();
-      
-      return handlerInput.responseBuilder
-        .speak(speechText)
-        .reprompt()
-        .getResponse()
-    }
-}
 
 const HelpIntentHandler = {
     canHandle(handlerInput) {
@@ -157,21 +158,20 @@ const ErrorHandler = {
     }
 };
 
-/////////////////////////OUR FUNCTIONS//////////////////////////////////////
-
 function getRandomNum(size) {
     return Math.floor(Math.random() * Math.floor(size));
 }
 
-function revWord(word) {
+function reverseWord(word) {
     let revWord = '';
-      let i = word.length - 1;
+    let i = word.length - 1;
       
-      while(i >= 0) {
-          revWord += word[i]; 
-          i--;
+     while(i >= 0) {
+        revWord += word[i]; 
+        i--;
       }
       
+      return revWord;
 }
 
 function getHttps() {
@@ -197,6 +197,7 @@ function getHttps() {
 }
 
 
+
 // This handler acts as the entry point for your skill, routing all request and response
 // payloads to the handlers above. Make sure any new handlers or interceptors you've
 // defined are included below. The order matters - they're processed top to bottom.
@@ -204,9 +205,9 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
         HelloWorldIntentHandler,
-        randomPhraseIntentHandler,
-        CallAPIIntentHandler,
+        RandomPhraseIntentHandler,//our new handler
         ReverseWordIntentHandler,
+        CallAPIIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
